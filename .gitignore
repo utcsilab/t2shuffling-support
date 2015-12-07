@@ -1,5 +1,6 @@
-# matlab tmp files
-*~
+# matlab mex files
+*.mexmaci64
 
-# vim tmp files
+# text editor tmp files
 *.swp
+*~
