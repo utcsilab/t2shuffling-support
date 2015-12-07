@@ -19,16 +19,16 @@ Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early Vie
 The extended phase graph (EPG) code
 was written by Brian Hargreaves and downloaded
 from http://web.stanford.edu/~bah/software/epg/
-on Dec.\ 7, 2015.
+on Dec. 7, 2015.
 
 All rights/distribution are the same as for the original code,
 and should cite the original author and webpage
 
 
 ## TODO
-* foot_basis code
+* foot_basis code -- __DONE__
   * epg code
-* data files
+* data files -- __DONE__
   * flipangle file
   * vieworder files?
   * proton and t2 image
