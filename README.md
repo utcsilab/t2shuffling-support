@@ -1,2 +1,27 @@
-# t2shuffling-support
-Demonstration code for the MRM manuscript, "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
+# T2 Shuffling Demonstration Code
+Demonstration code for the MRM manuscript,
+__T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging__.
+
+T2 Shuffling is an MRI acquisition and reconstruction method based on 3D Fast Spin-Echo. The method accounts for temporal
+dynamics during the echo trains to reduce image blur and resolve multiple image contrasts along the T2 relaxation curve.
+Figure 1 provides a high level overview of the method. The echo train ordering is randomly shuffled during the
+acquisition according to variable density Poisson disc sampling masks. The shuffling leads to reduced image blur at the
+cost of noise-like artifacts. The artifacts are iteratively suppressed in a regularized reconstruction based on
+compressed sensing and full signal dynamics are recovered.
+
+![](doc/images/t2shuffling-overview.png?raw=true)
+
+
+## TODO
+* foot_basis code
+  * epg code
+* data files
+  * flipangle file
+  * vieworder files?
+  * proton and t2 image
+* B1 sim?
+* admm/fista implementation
+* LLR degrees of freedom
+* TPSF calculation
+* gen nmr mask
+
