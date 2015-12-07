@@ -15,6 +15,16 @@ compressed sensing and full signal dynamics are recovered.
 Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early View (2016).
 
 
+## Acknowledgements
+The extended phase graph (EPG) code
+was written by Brian Hargreaves and downloaded
+from http://web.stanford.edu/~bah/software/epg/
+on Dec.\ 7, 2015.
+
+All rights/distribution are the same as for the original code,
+and should cite the original author and webpage
+
+
 ## TODO
 * foot_basis code
   * epg code
