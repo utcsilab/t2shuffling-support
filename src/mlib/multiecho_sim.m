@@ -13,6 +13,8 @@ e2s = 2; % initial skipped echoes
 t2map_data = 'data/foot_t2map.mat'; % contains proton, T2est, mask, T2vals
 imratio = 64/256; % downsample the image for computation purposes
 
+% --- do not change below this point
+
 if use_flipmod
     angles = dlmread('data/flipangles.txt');
     angles_rad = angles*pi/180;

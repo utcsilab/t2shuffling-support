@@ -3,7 +3,7 @@
 % Produces a k-t sampling pattern for T2 Shuffling acquisition
 
 dims = [260, 240];
-accel = [1.34, 1.34];
+accel = [1.34, 1.34]; % used to control overall scan time
 ETL = 82;
 e2s = 2;
 shuffle = true;
@@ -11,6 +11,8 @@ cut_corners = true;
 num_masks = 8;
 VD = 3;
 mask_cal_size = 12;
+
+% --- do not change below this point
 
 options.dims = dims;
 options.accel = accel;
