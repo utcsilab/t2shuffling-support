@@ -1,5 +1,5 @@
 %%
-addpath src/mlib
+addpath src/utils
 
 % T2 values in seconds
 myT2vals = load('data/T2vals', 'T2vals');

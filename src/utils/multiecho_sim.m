@@ -5,13 +5,15 @@
 %
 % final output is imgs [ny, nz, T]
 
+addpath src/utils
+
 use_flipmod = true; % true -- variable flip angles, false -- exp decay
 T1 = 1000e-3;
 TE = 5.688e-3; % echo time
-T = 78; % echo train length
+T = 80; % echo train length
 e2s = 2; % initial skipped echoes
 t2map_data = 'data/foot_t2map.mat'; % contains proton, T2est, mask, T2vals
-imratio = 64/256; % downsample the image for computation purposes
+imratio = 256/256; % downsample the image for computation purposes
 
 % --- do not change below this point
 
