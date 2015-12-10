@@ -88,6 +88,7 @@ llr_ops.block_dim = [8, 8];
 lsqr_ops.max_iter = 10;
 lsqr_ops.tol = 1e-4;
 
+cf = @(alpha) imshowc(reshape(alpha, ny, nz*K));
 
 ABSTOL = 1e-4;
 RELTOL = 1e-2;
