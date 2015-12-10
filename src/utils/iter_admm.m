@@ -30,8 +30,6 @@ else
     use_callback = true;
 end
 
-x_ref.data = zeros(size(b));
-
 x = x_ref.data;
 z = zeros(size(x));
 u = zeros(size(x));
@@ -82,7 +80,7 @@ for ii=1:max_iter
         history.s_norm(ii), history.eps_dual(ii), history.objval(ii));
     
     if use_callback
-        callback_fun(x);
+        callback_fun(x, history, ii);
     end
     
     % early stopping condition

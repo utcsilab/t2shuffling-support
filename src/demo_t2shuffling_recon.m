@@ -81,7 +81,7 @@ ksp_adj = A_adj(ksp);
 %% ADMM
 
 iter_ops.max_iter = 20;
-iter_ops.rho = .01;
+iter_ops.rho = 1;
 iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
 
 llr_ops.lambda = .01;
@@ -90,19 +90,17 @@ llr_ops.block_dim = [8, 8];
 lsqr_ops.max_iter = 10;
 lsqr_ops.tol = 1e-4;
 
-cf = @(alpha) imshowc(reshape(alpha, ny, nz*K));
-
 alpha_ref = RefValue;
 alpha_ref.data = zeros(ny, nz, K);
 
-history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, cf);
-
-alpha = alpha_ref.data;
-figure(1), plot(1:history.nitr, history.objval);
+history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, @admm_callback);
 
 disp(' ');
 
 %%
+alpha = alpha_ref.data;
+figure(1), plot(1:history.nitr, history.objval);
+
 im = T_for(alpha);
 
 disp('Rescaling')
