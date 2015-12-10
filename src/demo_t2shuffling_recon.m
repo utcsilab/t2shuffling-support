@@ -11,26 +11,28 @@
 %%
 addpath src/utils
 %% load data
-% ksp = sqreadcfl('data/ksp.cfl');
-sens1 = sqreadcfl('data/sens.cfl');
-bas = sqreadcfl('data/basis.hdr');
-mask = sqreadcfl('data/mask.cfl');
-im_truth = sqreadcfl('data/imgs.cfl');
+
+sens1 = squeeze(readcfl('data/sens'));
+bas = squeeze(readcfl('data/basis'));
+mask = squeeze(readcfl('data/mask'));
+im_truth = squeeze(readcfl('data/imgs'));
 
 % parameters
 K = 4;
-Phi = bas(:,1:K);
-T = 80;
-ny = 256;
-nz = 256;
-nc = 8;
 
-% repmat mask
+[ny, nz, T] = size(im_truth);
+nc = size(sens1, 3);
+
+% subspace
+Phi = bas(:,1:K);
+
+% permute mask
 masks = permute(mask, [1 2 4 3]);
 
-% normalize and repmat sensitivities
+% normalize sensitivities
 sens1_mag = reshape(vecnorm(reshape(sens1, [], nc).'), [ny, nz]);
-sens = bsxfun(@rdivide, sens1, sens1_mag); sens(isnan(sens)) = 0;
+sens = bsxfun(@rdivide, sens1, sens1_mag);
+sens(isnan(sens)) = 0;
 
 %% operators
 
@@ -79,10 +81,10 @@ ksp_adj = A_adj(ksp);
 %% ADMM
 
 iter_ops.max_iter = 20;
-iter_ops.rho = 1;
+iter_ops.rho = .01;
 iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
 
-llr_ops.lambda = 5; %.05;
+llr_ops.lambda = .01;
 llr_ops.block_dim = [8, 8];
 
 lsqr_ops.max_iter = 10;
@@ -90,8 +92,12 @@ lsqr_ops.tol = 1e-4;
 
 cf = @(alpha) imshowc(reshape(alpha, ny, nz*K));
 
-[alpha, history] = iter_admm(iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, cf);
+alpha_ref = RefValue;
+alpha_ref.data = zeros(ny, nz, K);
 
+history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, cf);
+
+alpha = alpha_ref.data;
 figure(1), plot(1:history.nitr, history.objval);
 
 disp(' ');

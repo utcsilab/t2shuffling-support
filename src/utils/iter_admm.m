@@ -1,10 +1,11 @@
-function [ x, history ] = iter_admm(iter_ops, llr_ops, lsqr_ops, Aop, b, callback_fun )
+function [ history ] = iter_admm(x_ref, iter_ops, llr_ops, lsqr_ops, Aop, b, callback_fun )
 %iter_admm ADMM algorithm for solving locally low rank regularization:
 %
-% \min_x 0.5 * || y - Ax ||_2^2 + lambda * sum_r || R_r(x) ||_*
+% \min_x 0.5 * || y - Ax ||_2^2 + lambda * sum_r || R_r(x) ||_*  --- (1)
 %   where R_r extracts a block from x around position r
 %
 % Inputs:
+%  x_ref -- pointer to solution to (1), with result stored in x_ref.data 
 %  iter_ops.rho -- rho augmented lagrangian parameter for ADMM
 %  iter_ops.max_iter -- maximum number of iterations
 %  iter_ops.objfun -- handle to objection function, J(x, sv, lambda)
@@ -21,7 +22,6 @@ function [ x, history ] = iter_admm(iter_ops, llr_ops, lsqr_ops, Aop, b, callbac
 %  callback_fun -- execute  callback_fun(x) at the end of each iteration
 %
 % Outputs:
-%  x -- solution to (1), same size as b
 %  history -- struct of history/statistics from the optimization
 
 if nargin < 6
@@ -30,9 +30,11 @@ else
     use_callback = true;
 end
 
-x = zeros(size(b));
-z = x;
-u = x;
+x_ref.data = zeros(size(b));
+
+x = x_ref.data;
+z = zeros(size(x));
+u = zeros(size(x));
 
 rho = iter_ops.rho;
 max_iter = iter_ops.max_iter;
@@ -48,6 +50,8 @@ abserr = sqrt(numel(b)) * ABSTOL;
 
 fprintf('%3s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s\n', 'iter', ...
     'lsqr iters', 'r norm', 'eps pri', 's norm', 'eps dual', 'objective');
+
+tic;
 
 for ii=1:max_iter
       
@@ -87,9 +91,12 @@ for ii=1:max_iter
         break;
     end
     
+    x_ref.data = x;
 end
+t2 = toc;
 
 history.nitr = ii;
+history.run_time = t2;
 
 end
 
