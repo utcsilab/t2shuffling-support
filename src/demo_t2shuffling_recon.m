@@ -11,7 +11,7 @@
 %%
 addpath src/utils
 %% load data
-ksp = sqreadcfl('data/ksp.cfl');
+% ksp = sqreadcfl('data/ksp.cfl');
 sens1 = sqreadcfl('data/sens.cfl');
 bas = sqreadcfl('data/basis.hdr');
 mask = sqreadcfl('data/mask.cfl');
@@ -32,6 +32,33 @@ masks = permute(mask, [1 2 4 3]);
 sens1_mag = reshape(vecnorm(reshape(sens1, [], nc).'), [ny, nz]);
 sens = bsxfun(@rdivide, sens1, sens1_mag); sens(isnan(sens)) = 0;
 
+%% operators
+
+% ESPIRiT maps operator applied to coefficient images
+S_for = @(a) bsxfun(@times, sens, permute(a, [1, 2, 4, 3]));
+S_adj = @(as) squeeze(sum(bsxfun(@times, conj(sens), as), 3));
+SHS = @(a) S_adj(S_for(a));
+
+% Temporal projection operator
+T_for = @(a) temporal_forward(a, Phi);
+T_adj = @(x) temporal_adjoint(x, Phi);
+
+% Fourier transform
+F_for = @(x) fft2c(x);
+F_adj = @(y) ifft2c(y);
+
+% Sampling mask
+P_for = @(y) bsxfun(@times, y, masks);
+
+% Full forward model
+A_for = @(a) P_for(T_for(F_for(S_for(a))));
+A_adj = @(y) S_adj(F_adj(T_adj(P_for(y))));
+AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); % slightly faster
+
+
+ksp = P_for(F_for(S_for(im_truth)));
+ksp_adj = A_adj(ksp);
+
 %% scaling
 tmp = dimnorm(ifft2c(bsxfun(@times, ksp, masks)), 3);
 tmpnorm = dimnorm(tmp, 4);
@@ -49,74 +76,32 @@ fprintf('\nScaling: %f\n\n', scaling);
 
 ksp = ksp ./ scaling;
 
-%% operators
+%% ADMM
 
-% ESPIRiT maps operator applied to coefficient images
-S_for = @(a) bsxfun(@times, sens, permute(a, [1, 2, 4, 3]));
-S_adj = @(as) squeeze(sum(bsxfun(@times, conj(sens), as), 3));
-SHS = @(a) S_adj(S_for(a));
+iter_ops.max_iter = 20;
+iter_ops.rho = 1;
+iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lambda*sum(sv(:));
 
-% Temporal projection operator
-T_for = @(a) temporal_forward(a, Phi);
-T_adj = @(x) temporal_adjoint(x, Phi);
+llr_ops.lambda = 5; %.05;
+llr_ops.block_dim = [8, 8];
 
-% Fourier transform
-F_for = @(x) fft2c(x);
-F_adj = @(y) ifft2c(y);
-
-% Sampling mask
-P_for = @(y) bsxfun(@times, y, masks);masks.*y;
-
-% Full forward model
-A_for = @(a) P_for(T_for(F_for(S_for(a))));
-A_adj = @(y) S_adj(F_adj(T_adj(P_for(y))));
-AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); % slightly faster
-
-ksp_adj = A_adj(ksp);
-
-%%
-alpha = zeros(ny,nz,K);
-alpha_old = alpha;
-alpha_y = alpha;
-
-nitr = 200;
-tau = 0.95;
-lambda = .05;
-eps = 1e-3;
-block_dim = [8, 8];
+lsqr_ops.max_iter = 10;
+lsqr_ops.tol = 1e-4;
 
 
-tk = 1;
+ABSTOL = 1e-4;
+RELTOL = 1e-2;
 
-objval = zeros(nitr, 1);
-[~, s_vals] = llr_thresh(ksp_adj, 0, block_dim);
+abserr = sqrt(ny*nz*K) * ABSTOL;
 
-objective = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lambda*sum(sv(:));
+[alpha, history] = iter_admm(iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj);
 
-fprintf('Objective Value\n');
-
-for ii=1:nitr
-        
-    r = ksp_adj - AHA(alpha_y);
-    
-    objval(ii) = objective(alpha, s_vals, lambda);
-    fprintf('#It %03d: %f\n', ii, objval(ii));
-
-    [alpha, s_vals] = llr_thresh(alpha_y + tau*r, lambda*tau, block_dim);
-    
-    % FISTA step
-    tkold = tk;
-    tk = (1 + sqrt(1 + 4*tkold^2))/2;
-    
-    alpha_y = alpha + (tkold - 1)/tk * (alpha - alpha_old);
-    alpha_old = alpha;
-    
-end
+figure(1), plot(1:history.nitr, history.objval);
 
 disp(' ');
 
 %%
-im = temporal_forward(alpha, Phi);
+im = T_for(alpha);
 
 disp('rescaling')
 im = im * scaling;
