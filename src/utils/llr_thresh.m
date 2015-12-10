@@ -64,7 +64,7 @@ for ii=1:K
 end
 
 if randshift
-    alpha_thresh = circshift(alpha, -1 * shift_idx);
+    alpha_thresh = circshift(alpha_thresh, -1 * shift_idx);
 end
 
 s_vals = permute(reshape(s_LLR, [K, ny / Wy, nz / Wz]), [2, 3, 1]);
