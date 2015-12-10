@@ -80,7 +80,7 @@ ksp_adj = A_adj(ksp);
 
 iter_ops.max_iter = 20;
 iter_ops.rho = 1;
-iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lambda*sum(sv(:));
+iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
 
 llr_ops.lambda = 5; %.05;
 llr_ops.block_dim = [8, 8];
