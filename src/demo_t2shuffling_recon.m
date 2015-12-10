@@ -57,7 +57,6 @@ AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); % slightly faster
 
 
 ksp = P_for(F_for(S_for(im_truth)));
-ksp_adj = A_adj(ksp);
 
 %% scaling
 tmp = dimnorm(ifft2c(bsxfun(@times, ksp, masks)), 3);
@@ -75,6 +74,7 @@ end
 fprintf('\nScaling: %f\n\n', scaling);
 
 ksp = ksp ./ scaling;
+ksp_adj = A_adj(ksp);
 
 %% ADMM
 
