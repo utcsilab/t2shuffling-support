@@ -1,4 +1,4 @@
-function [ x, history ] = iter_admm(iter_ops, llr_ops, lsqr_ops, Aop, b )
+function [ x, history ] = iter_admm(iter_ops, llr_ops, lsqr_ops, Aop, b, callback_fun )
 %iter_admm ADMM algorithm for solving locally low rank regularization:
 %
 % \min_x 0.5 * || y - Ax ||_2^2 + lambda * sum_r || R_r(x) ||_*
@@ -17,11 +17,18 @@ function [ x, history ] = iter_admm(iter_ops, llr_ops, lsqr_ops, Aop, b )
 %
 %  Aop -- function handle for A'*A*x, Aop(x)
 %  b -- adjoint of data, A'*y
-%
+% 
+%  callback_fun -- execute  callback_fun(x) at the end of each iteration
 %
 % Outputs:
 %  x -- solution to (1), same size as b
 %  history -- struct of history/statistics from the optimization
+
+if nargin < 6
+    use_callback = false;
+else
+    use_callback = true;
+end
 
 x = zeros(size(b));
 z = x;
@@ -44,20 +51,21 @@ fprintf('%3s\t%10s\t%10s\t%10s\t%10s\t%10s\t%10s\n', 'iter', ...
 
 for ii=1:max_iter
       
-    % update alpha using LSQR. the operator may change if rho changes
+    % update x using LSQR. the operator may change if rho changes
     AHA_lsqr = @(a) vec(rho * reshape(a, size(b)) + Aop(reshape(a, size(b)))); % for lsqr
     [a, ~, ~, lsqr_nitr] = symmlq(AHA_lsqr, b(:) + rho * (z(:) - u(:)), ...
         lsqr_ops.tol, lsqr_ops.max_iter, [], [], x(:)); 
     x = reshape(a, size(b));
 
-    % update alpha_z using LLR singular value thresholding
+    % update z using LLR singular value thresholding
     z_old = z;
     xpu = x + u;
     [z, s_vals] = llr_thresh(xpu, lambda / rho, block_dim);
     
-    % update alpha_u
+    % update u
     u = xpu - z;
     
+    % record
     history.objval(ii) = objfun(x, s_vals, lambda);
     history.lsqr_nitr(ii) = lsqr_nitr;
     history.r_norm(ii) = norm_mat(x - z);
@@ -69,6 +77,11 @@ for ii=1:max_iter
         sum(history.lsqr_nitr), history.r_norm(ii), history.eps_pri(ii), ...
         history.s_norm(ii), history.eps_dual(ii), history.objval(ii));
     
+    if use_callback
+        callback_fun(x);
+    end
+    
+    % early stopping condition
     if (history.r_norm(ii) < history.eps_pri(ii)) && (history.s_norm(ii) < history.eps_dual(ii))
         history.nitr = ii;
         break;
