@@ -90,12 +90,7 @@ lsqr_ops.tol = 1e-4;
 
 cf = @(alpha) imshowc(reshape(alpha, ny, nz*K));
 
-ABSTOL = 1e-4;
-RELTOL = 1e-2;
-
-abserr = sqrt(ny*nz*K) * ABSTOL;
-
-[alpha, history] = iter_admm(iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj);
+[alpha, history] = iter_admm(iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, cf);
 
 figure(1), plot(1:history.nitr, history.objval);
 
@@ -104,7 +99,7 @@ disp(' ');
 %%
 im = T_for(alpha);
 
-disp('rescaling')
+disp('Rescaling')
 im = im * scaling;
 %%
 fprintf('relative norm with truth: %f\n', relnorm(im, im_truth));
