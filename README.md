@@ -14,6 +14,26 @@ compressed sensing and full signal dynamics are recovered.
 [1] J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, "T2 Shuffling: Sharp,
 Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early View (2016).
 
+## Organization
+* `src/`: Matlab demos, outlined below
+  * `src/utils/'`: Matlab utility and mex functions
+* `data/`: Collection of mat and BART files used by the demos
+* `doc/`: Documentation support files
+
+## Matlab Demos
+
+### T2 Shuffling reconstruction using ADMM
+The script `src/demo_t2shuffling_recon.m` demonstrates the T2 Shuffling reconstruction on an axial slice of an
+under-sampled knee.
+
+### Locally Low Rank degrees of freedom
+
+### Randomly shuffled echo train ordering
+
+### B_1 inhomogeneity
+
+### Transform Point Spread Function
+
 
 ## Acknowledgements
 The extended phase graph (EPG) code
@@ -33,8 +53,8 @@ and should cite the original author and webpage
   * vieworder files?
   * proton and t2 image
 * B1 sim?
-* admm/fista implementation
+* admm/fista implementation -- __DONE__
 * LLR degrees of freedom
 * TPSF calculation
-* gen nmr mask
+* gen nmr mask -- __DONE__
 
