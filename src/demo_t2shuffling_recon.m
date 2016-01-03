@@ -81,7 +81,7 @@ ksp_adj = A_adj(ksp);
 %% ADMM
 
 iter_ops.max_iter = 20;
-iter_ops.rho = 1;
+iter_ops.rho = .1;
 iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
 
 llr_ops.lambda = .01;
