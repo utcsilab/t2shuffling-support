@@ -21,6 +21,15 @@ Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early Vie
 * `doc/`: Documentation and demos
 
 ## Matlab Demos
+To install the mex files and add the correct paths for the demos,
+navigate to the `t2shuffling-support` base directory, and run the command
+```
+>> make
+```
+Now you can run any of the demos in the `src` directory. To list the demos, run
+```
+t2shuffling_demos
+```
 
 ### T2 Shuffling reconstruction using ADMM
 The script [`src/demo_t2shuffling_recon.m`](src/demo_t2shuffling_recon.m) demonstrates the T2 Shuffling reconstruction on an axial slice of an
