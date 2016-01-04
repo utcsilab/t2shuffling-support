@@ -16,9 +16,9 @@ Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early Vie
 
 ## Organization
 * `src/`: Matlab demos, outlined below
-  * `src/utils/'`: Matlab utility and mex functions
+  * `src/utils/`: Matlab utility and mex functions
 * `data/`: Collection of mat and BART files used by the demos
-* `doc/`: Documentation support files
+* `doc/`: Documentation and demos
 
 ## Matlab Demos
 
@@ -29,16 +29,21 @@ See the [demo webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_recon
 
 ### Locally Low Rank degrees of freedom
 The script [`src/demo_llr_degrees_of_freedom.m`](src/demo_llr_degrees_of_freedom.m) demonstrates the LLR degrees of freedom and k-means clustering.
-See the [demo published webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
 
 ### Randomly shuffled echo train ordering
 The script [`src/demo_t2shuffling_mask.m`](src/demo_t2shuffling_mask.m) demonstrates the echo train view ordering/sampling pattern generation.
-See the [demo published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_mask.html).
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_mask.html).
 
 ### B_1 inhomogeneity
 The script [`src/demo_b1_and_model_error.m`](src/demo_b1_and_model_error.m) simulates the subspace model error as a function of percent B1 inhomogeneity and T2 value,
 as well as demonstrating the bias vs. noise tradeoff with subspace size.
-See the [demo published webpage](http://htmlpreview.github.io/?html/demo_b1_and_model_error.html).
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_b1_and_model_error.html).
+
+### 1D Point Spread Function
+The script [`src/demo_psf_1d.m`](src/demo_psf_1d.m) simulates the 1D point spread function (PSF) for exponential decay
+with both ceter-out and randomly shuffled view orderings.
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_psf_1d.html).
 
 ### Transform Point Spread Function
 
