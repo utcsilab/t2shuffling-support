@@ -32,6 +32,8 @@ The script `src/demo_llr_degrees_of_freedom.m` demonstrates the LLR degrees of f
 See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
 
 ### Randomly shuffled echo train ordering
+The script `src/demo_t2shuffling_mask.m` demonstrates the echo train view ordering/sampling pattern generation.
+See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_mask.html).
 
 ### B_1 inhomogeneity
 
