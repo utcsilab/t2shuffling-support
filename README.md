@@ -54,7 +54,7 @@ and should cite the original author and webpage
   * proton and t2 image
 * B1 sim?
 * admm/fista implementation -- __DONE__
-* LLR degrees of freedom
+* LLR degrees of freedom -- __DONE__
 * TPSF calculation
 * gen nmr mask -- __DONE__
 
