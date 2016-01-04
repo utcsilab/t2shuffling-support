@@ -23,19 +23,22 @@ Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early Vie
 ## Matlab Demos
 
 ### T2 Shuffling reconstruction using ADMM
-The script `src/demo_t2shuffling_recon.m` demonstrates the T2 Shuffling reconstruction on an axial slice of an
+The script [`src/demo_t2shuffling_recon.m`](src/demo_t2shuffling_recon.m) demonstrates the T2 Shuffling reconstruction on an axial slice of an
 under-sampled knee.
-See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_recon.html).
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_recon.html).
 
 ### Locally Low Rank degrees of freedom
-The script `src/demo_llr_degrees_of_freedom.m` demonstrates the LLR degrees of freedom and k-means clustering.
-See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
+The script [`src/demo_llr_degrees_of_freedom.m`](src/demo_llr_degrees_of_freedom.m) demonstrates the LLR degrees of freedom and k-means clustering.
+See the [demo published webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
 
 ### Randomly shuffled echo train ordering
-The script `src/demo_t2shuffling_mask.m` demonstrates the echo train view ordering/sampling pattern generation.
-See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_mask.html).
+The script [`src/demo_t2shuffling_mask.m`](src/demo_t2shuffling_mask.m) demonstrates the echo train view ordering/sampling pattern generation.
+See the [demo published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_mask.html).
 
 ### B_1 inhomogeneity
+The script [`src/demo_b1_and_model_error.m`](src/demo_b1_and_model_error.m) simulates the subspace model error as a function of percent B1 inhomogeneity and T2 value,
+as well as demonstrating the bias vs. noise tradeoff with subspace size.
+See the [demo published webpage](http://htmlpreview.github.io/?html/demo_b1_and_model_error.html).
 
 ### Transform Point Spread Function
 
@@ -57,7 +60,7 @@ and should cite the original author and webpage
   * flipangle file
   * vieworder files?
   * proton and t2 image
-* B1 sim?
+* B1 sim -- __DONE__
 * admm/fista implementation -- __DONE__
 * LLR degrees of freedom -- __DONE__
 * TPSF calculation

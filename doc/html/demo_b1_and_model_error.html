@@ -1,0 +1,280 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>demo_b1_and_model_error</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-04"><meta name="DC.source" content="demo_b1_and_model_error.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Load the flip angles and basis</a></li><li><a href="#4">Parameters</a></li><li><a href="#5">First simulate fully homogeneous signals and generate subspace</a></li><li><a href="#6">Next simulate inhomogeneous signals (this will take a while...)</a></li><li><a href="#7">Compute projection and normalized error map</a></li><li><a href="#8">Compute model error vs subspace size for each signal evolution</a></li><li><a href="#9">Compute RMSE vs subspace size for each signal evolution</a></li></ul></div><pre class="codeinput"><span class="comment">%%%%%%</span>
+<span class="comment">% This code demonstrates the B1 inhomogeneity simulation</span>
+<span class="comment">% and bias vs. noise tradeoff described in the MRM paper,</span>
+<span class="comment">% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"</span>
+<span class="comment">%</span>
+<span class="comment">% The code is provided to demonstrate the method. It is not optimized</span>
+<span class="comment">% for reconstruction time</span>
+<span class="comment">%</span>
+<span class="comment">% Jonathan Tamir &lt;jtamir@eecs.berkeley.edu&gt;</span>
+<span class="comment">% Jan 04, 2016</span>
+</pre><pre class="codeinput">addpath <span class="string">src/utils/</span>
+</pre><h2>Load the flip angles and basis<a name="3"></a></h2><pre class="codeinput">TE = 6.168e-3;
+angles = dlmread(<span class="string">'data/footsim/flipangles.txt'</span>);
+angles_rad = angles * pi / 180;
+</pre><h2>Parameters<a name="4"></a></h2><pre class="codeinput">K = 4; <span class="comment">% subspace size</span>
+Bmax = .4; <span class="comment">% maximum B1 inhomogeneity</span>
+T2min = 15 * 1e-3; <span class="comment">% min T2 in s</span>
+T2max = 1000 * 1e-3; <span class="comment">% max T2 in s</span>
+T1 = 1000 * 1e-3; <span class="comment">% T1 in s</span>
+M = 256; <span class="comment">% number of B1 inhomogeneity levels to simulate</span>
+N = 256; <span class="comment">% number of T2 values to simulate</span>
+e2s = 2; <span class="comment">% number of echoes to skip</span>
+
+T = length(angles) - e2s - 1;
+
+B_errs = linspace(-Bmax, Bmax, M);
+T2_vals = linspace(T2min, T2max, N);
+A_vals = zeros(T, M, N);
+</pre><h2>First simulate fully homogeneous signals and generate subspace<a name="5"></a></h2><pre class="codeinput">[~, A_0, ~, ~, ~, ~] = gen_FSEbasis(N, angles, T, e2s, TE, [T1], T2_vals, false);
+[U, ~, ~] = svd(A_0, <span class="string">'econ'</span>);
+Phi = U(:,1:K);
+
+B_0 = Phi*Phi'*A_0; <span class="comment">% subspace projection</span>
+</pre><h2>Next simulate inhomogeneous signals (this will take a while...)<a name="6"></a></h2><pre class="codeinput"><span class="keyword">for</span> ii=1:M
+<span class="comment">%     disp(ii)</span>
+    B_err = B_errs(ii);
+    angles_ii = angles*(1+B_err);
+    [~, A_ii, ~, ~, ~, ~] = gen_FSEbasis(N, angles_ii, T, e2s, TE, [T1], T2_vals, false);
+    A_vals(:,ii,:) = A_ii;
+<span class="keyword">end</span>
+</pre><h2>Compute projection and normalized error map<a name="7"></a></h2><pre class="codeinput">B_vals = reshape(Phi*Phi'*reshape(A_vals, T, []), T, M, N);
+err_map_n = squeeze(dimnorm(A_vals-B_vals, 1)./dimnorm(A_vals, 1))';
+
+figure(1);
+imshow(err_map_n', [0, 0.03]);
+colormap(<span class="string">'default'</span>)
+colorbar
+ftitle([<span class="string">'Normalized Modeling error (K='</span>, num2str(K), <span class="string">')'</span>])
+ylabel(<span class="string">'B1 homogeneity %'</span>); xlabel(<span class="string">'T2 value'</span>), faxis
+</pre><img vspace="5" hspace="5" src="demo_b1_and_model_error_01.png" alt=""> <h2>Compute model error vs subspace size for each signal evolution<a name="8"></a></h2><pre class="codeinput"><span class="comment">% Simulation parameters</span>
+K_vals = 1:6; <span class="comment">% compute for these subspace sizes</span>
+ii_idx = [1, N]; <span class="comment">% grab the first and the last T2 value simulation</span>
+
+Klen = length(K_vals);
+L = length(ii_idx);
+e1 = zeros(L, Klen);
+e1n = zeros(L, Klen);
+leg_str = cell(L, 1);
+
+<span class="keyword">for</span> ii=1:length(ii_idx)
+    x = A_0(:,ii_idx(ii));
+    e0 = zeros(1, Klen);
+    <span class="keyword">for</span> kk=1:Klen
+        K = K_vals(kk);
+        Phi = U(:,1:K);
+        e0(kk) = norm(x - Phi*Phi'*x,2)^2;
+    <span class="keyword">end</span>
+    e1(ii,:) = e0;
+    e1n(ii,:) = sqrt(e0) / norm(x);
+
+    T2v = T2_vals(ii_idx(ii));
+    leg_str{ii} = sprintf(<span class="string">'T2 = %d ms\n'</span>, round(T2v*1000));
+<span class="keyword">end</span>
+
+
+figure(2)
+plot(K_vals, e1n, <span class="string">'o-'</span>, <span class="string">'linewidth'</span>, 4);
+xlim([1, max(K_vals)]);
+ylim([0,1])
+xlabel(<span class="string">'Subspace Size (K)'</span>);
+legend(leg_str);
+faxis(gca, 32);
+ylabel(<span class="string">'Normalized Model Error'</span>, <span class="string">'FontSize'</span>, 24);
+</pre><img vspace="5" hspace="5" src="demo_b1_and_model_error_02.png" alt=""> <h2>Compute RMSE vs subspace size for each signal evolution<a name="9"></a></h2><pre class="codeinput">stdev=.07; <span class="comment">% approximately 15 dB at T2 = 14 ms</span>
+
+A_vals = permute(repmat(A_0, [1, 1, Klen]), [1 3 2]);
+SNRs = 10*log10(dimnorm(A_vals(:,:,ii_idx),1).^2 ./ (stdev^2 * repmat(K_vals, [1, 1, length(ii_idx)])));
+
+figure(3)
+plot(K_vals, sqrt(e1 + stdev^2*repmat(K_vals,length(ii_idx),1)), <span class="string">'o-'</span>, <span class="string">'linewidth'</span>, 4);
+hold <span class="string">on</span>, plot(K_vals, stdev*sqrt(K_vals), <span class="string">'k--'</span>, <span class="string">'linewidth'</span>, 2), hold <span class="string">off</span>
+xlabel(<span class="string">'Subspace Size (K)'</span>);
+ylabel(<span class="string">'RMSE'</span>);
+xlim([1, max(K_vals)]);
+ylim([0,1])
+faxis(gca, 32);
+</pre><img vspace="5" hspace="5" src="demo_b1_and_model_error_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%
+% This code demonstrates the B1 inhomogeneity simulation
+% and bias vs. noise tradeoff described in the MRM paper,
+% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
+%
+% The code is provided to demonstrate the method. It is not optimized
+% for reconstruction time
+%
+% Jonathan Tamir <jtamir@eecs.berkeley.edu>
+% Jan 04, 2016
+%%
+addpath src/utils/
+
+%% Load the flip angles and basis
+TE = 6.168e-3;
+angles = dlmread('data/footsim/flipangles.txt');
+angles_rad = angles * pi / 180;
+
+%% Parameters
+K = 4; % subspace size
+Bmax = .4; % maximum B1 inhomogeneity
+T2min = 15 * 1e-3; % min T2 in s
+T2max = 1000 * 1e-3; % max T2 in s
+T1 = 1000 * 1e-3; % T1 in s
+M = 256; % number of B1 inhomogeneity levels to simulate
+N = 256; % number of T2 values to simulate
+e2s = 2; % number of echoes to skip
+
+T = length(angles) - e2s - 1;
+
+B_errs = linspace(-Bmax, Bmax, M);
+T2_vals = linspace(T2min, T2max, N);
+A_vals = zeros(T, M, N);
+
+%% First simulate fully homogeneous signals and generate subspace
+[~, A_0, ~, ~, ~, ~] = gen_FSEbasis(N, angles, T, e2s, TE, [T1], T2_vals, false);
+[U, ~, ~] = svd(A_0, 'econ');
+Phi = U(:,1:K);
+
+B_0 = Phi*Phi'*A_0; % subspace projection
+
+%% Next simulate inhomogeneous signals (this will take a while...)
+for ii=1:M
+%     disp(ii)
+    B_err = B_errs(ii);
+    angles_ii = angles*(1+B_err);
+    [~, A_ii, ~, ~, ~, ~] = gen_FSEbasis(N, angles_ii, T, e2s, TE, [T1], T2_vals, false);    
+    A_vals(:,ii,:) = A_ii;
+end
+
+%% Compute projection and normalized error map
+B_vals = reshape(Phi*Phi'*reshape(A_vals, T, []), T, M, N);
+err_map_n = squeeze(dimnorm(A_vals-B_vals, 1)./dimnorm(A_vals, 1))';
+
+figure(1);
+imshow(err_map_n', [0, 0.03]);
+colormap('default')
+colorbar
+ftitle(['Normalized Modeling error (K=', num2str(K), ')'])
+ylabel('B1 homogeneity %'); xlabel('T2 value'), faxis
+
+%% Compute model error vs subspace size for each signal evolution
+
+% Simulation parameters
+K_vals = 1:6; % compute for these subspace sizes
+ii_idx = [1, N]; % grab the first and the last T2 value simulation
+
+Klen = length(K_vals);
+L = length(ii_idx);
+e1 = zeros(L, Klen);
+e1n = zeros(L, Klen);
+leg_str = cell(L, 1);
+
+for ii=1:length(ii_idx)
+    x = A_0(:,ii_idx(ii));
+    e0 = zeros(1, Klen);
+    for kk=1:Klen
+        K = K_vals(kk);
+        Phi = U(:,1:K);
+        e0(kk) = norm(x - Phi*Phi'*x,2)^2;
+    end
+    e1(ii,:) = e0;
+    e1n(ii,:) = sqrt(e0) / norm(x);
+    
+    T2v = T2_vals(ii_idx(ii));
+    leg_str{ii} = sprintf('T2 = %d ms\n', round(T2v*1000));
+end
+
+
+figure(2)
+plot(K_vals, e1n, 'o-', 'linewidth', 4);
+xlim([1, max(K_vals)]);
+ylim([0,1])
+xlabel('Subspace Size (K)');
+legend(leg_str);
+faxis(gca, 32);
+ylabel('Normalized Model Error', 'FontSize', 24);
+
+%% Compute RMSE vs subspace size for each signal evolution
+stdev=.07; % approximately 15 dB at T2 = 14 ms
+
+A_vals = permute(repmat(A_0, [1, 1, Klen]), [1 3 2]);
+SNRs = 10*log10(dimnorm(A_vals(:,:,ii_idx),1).^2 ./ (stdev^2 * repmat(K_vals, [1, 1, length(ii_idx)])));
+
+figure(3)
+plot(K_vals, sqrt(e1 + stdev^2*repmat(K_vals,length(ii_idx),1)), 'o-', 'linewidth', 4);
+hold on, plot(K_vals, stdev*sqrt(K_vals), 'kREPLACE_WITH_DASH_DASH', 'linewidth', 2), hold off
+xlabel('Subspace Size (K)');
+ylabel('RMSE');
+xlim([1, max(K_vals)]);
+ylim([0,1])
+faxis(gca, 32);
+##### SOURCE END #####
+--></body></html>
