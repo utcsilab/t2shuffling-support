@@ -12,16 +12,15 @@
 addpath src/utils
 %% load data
 
-sens1 = squeeze(readcfl('data/sens'));
-bas = squeeze(readcfl('data/basis'));
-mask = squeeze(readcfl('data/mask'));
-im_truth = squeeze(readcfl('data/imgs'));
+sens1 = squeeze(readcfl('data/knee/sens'));
+bas = squeeze(readcfl('data/knee/bas'));
+mask = squeeze(readcfl('data/knee/mask'));
+ksp = squeeze(readcfl('data/knee/ksp.te'));
 
 % parameters
 K = 4;
 
-[ny, nz, T] = size(im_truth);
-nc = size(sens1, 3);
+[ny, nz, nc, T] = size(ksp);
 
 % subspace
 Phi = bas(:,1:K);
@@ -58,7 +57,7 @@ A_adj = @(y) S_adj(F_adj(T_adj(P_for(y))));
 AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); % slightly faster
 
 
-ksp = P_for(F_for(S_for(im_truth)));
+% ksp = P_for(F_for(S_for(im_truth)));
 
 %% scaling
 tmp = dimnorm(ifft2c(bsxfun(@times, ksp, masks)), 3);
@@ -80,12 +79,12 @@ ksp_adj = A_adj(ksp);
 
 %% ADMM
 
-iter_ops.max_iter = 20;
+iter_ops.max_iter = 200;
 iter_ops.rho = .1;
 iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
 
-llr_ops.lambda = .01;
-llr_ops.block_dim = [8, 8];
+llr_ops.lambda = .04;
+llr_ops.block_dim = [10, 10];
 
 lsqr_ops.max_iter = 10;
 lsqr_ops.tol = 1e-4;
@@ -97,21 +96,26 @@ history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, @admm_
 
 disp(' ');
 
-%%
+%% Project and re-scale
 alpha = alpha_ref.data;
-figure(1), plot(1:history.nitr, history.objval);
-
 im = T_for(alpha);
 
 disp('Rescaling')
 im = im * scaling;
-%%
-fprintf('relative norm with truth: %f\n', relnorm(im, im_truth));
-figure(1);
-imshow(abs(cat(2,im_truth(:,:,1), im(:,:,1))), []);
-title('TE 1 - truth (left) vs. recon (right)');
+
+%% Show the result
+figure(1), plot(1:history.nitr, history.objval, 'linewidth', 3);
+ftitle('Objective Value vs. Iteration Number'); xlabel('Iteration Number');
+ylabel('Objective Value'); faxis;
+
 figure(2);
-imshow(abs(cat(2,im_truth(:,:,12), im(:,:,12))), []);
-title('TE 12 - truth (left) vs. recon (right)');
+imshow(abs(reshape(alpha, ny, [])), []);
+ftitle('Reconstructed Coefficient Images');
+
+figure(3);
+imshow(abs(cat(2, im(:,:,5), im(:,:,15), im(:,:,30))), []);
+ftitle('Reconstruction at TE # 5, 15, and 30');
+
+
 
 
