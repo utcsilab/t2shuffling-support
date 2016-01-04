@@ -25,8 +25,11 @@ Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early Vie
 ### T2 Shuffling reconstruction using ADMM
 The script `src/demo_t2shuffling_recon.m` demonstrates the T2 Shuffling reconstruction on an axial slice of an
 under-sampled knee.
+See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_recon.html).
 
 ### Locally Low Rank degrees of freedom
+The script `src/demo_llr_degrees_of_freedom.m` demonstrates the LLR degrees of freedom and k-means clustering.
+See the [Matlab published webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
 
 ### Randomly shuffled echo train ordering
 
