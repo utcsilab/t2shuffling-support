@@ -24,7 +24,7 @@ function [ history ] = iter_admm(x_ref, iter_ops, llr_ops, lsqr_ops, Aop, b, cal
 % Outputs:
 %  history -- struct of history/statistics from the optimization
 
-if nargin < 6
+if nargin < 7
     use_callback = false;
 else
     use_callback = true;
