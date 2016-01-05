@@ -1,0 +1,508 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>demo_t2shuffling_recon</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-03"><meta name="DC.source" content="demo_t2shuffling_recon.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">load data</a></li><li><a href="#4">operators</a></li><li><a href="#5">scaling</a></li><li><a href="#6">ADMM</a></li><li><a href="#7">Project and re-scale</a></li><li><a href="#8">Show the result</a></li></ul></div><pre class="codeinput"><span class="comment">%%%%%%</span>
+<span class="comment">% This code demonstrates the T2 Shuffling reconstruction</span>
+<span class="comment">% described in the MRM paper,</span>
+<span class="comment">% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"</span>
+<span class="comment">%</span>
+<span class="comment">% The code is provided to demonstrate the method. It is not optimized</span>
+<span class="comment">% for reconstruction time</span>
+<span class="comment">%</span>
+<span class="comment">% Jonathan Tamir &lt;jtamir@eecs.berkeley.edu&gt;</span>
+<span class="comment">% Dec 07, 2015</span>
+</pre><pre class="codeinput">addpath <span class="string">src/utils</span>
+</pre><h2>load data<a name="3"></a></h2><pre class="codeinput">sens1 = squeeze(readcfl(<span class="string">'data/knee/sens'</span>));
+bas = squeeze(readcfl(<span class="string">'data/knee/bas'</span>));
+mask = squeeze(readcfl(<span class="string">'data/knee/mask'</span>));
+ksp = squeeze(readcfl(<span class="string">'data/knee/ksp.te'</span>));
+
+<span class="comment">% parameters</span>
+K = 4;
+
+[ny, nz, nc, T] = size(ksp);
+
+<span class="comment">% subspace</span>
+Phi = bas(:,1:K);
+
+<span class="comment">% permute mask</span>
+masks = permute(mask, [1 2 4 3]);
+
+<span class="comment">% normalize sensitivities</span>
+sens1_mag = reshape(vecnorm(reshape(sens1, [], nc).'), [ny, nz]);
+sens = bsxfun(@rdivide, sens1, sens1_mag);
+sens(isnan(sens)) = 0;
+</pre><pre class="codeoutput">Size: 1  260  240    8
+Size: 1   1   1   1   1  80  80
+Size: 1  260  240    1    1   80
+Size: 1  260  240    8    1   80
+</pre><h2>operators<a name="4"></a></h2><pre class="codeinput"><span class="comment">% ESPIRiT maps operator applied to coefficient images</span>
+S_for = @(a) bsxfun(@times, sens, permute(a, [1, 2, 4, 3]));
+S_adj = @(as) squeeze(sum(bsxfun(@times, conj(sens), as), 3));
+SHS = @(a) S_adj(S_for(a));
+
+<span class="comment">% Temporal projection operator</span>
+T_for = @(a) temporal_forward(a, Phi);
+T_adj = @(x) temporal_adjoint(x, Phi);
+
+<span class="comment">% Fourier transform</span>
+F_for = @(x) fft2c(x);
+F_adj = @(y) ifft2c(y);
+
+<span class="comment">% Sampling mask</span>
+P_for = @(y) bsxfun(@times, y, masks);
+
+<span class="comment">% Full forward model</span>
+A_for = @(a) P_for(T_for(F_for(S_for(a))));
+A_adj = @(y) S_adj(F_adj(T_adj(P_for(y))));
+AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); <span class="comment">% slightly faster</span>
+
+
+<span class="comment">% ksp = P_for(F_for(S_for(im_truth)));</span>
+</pre><h2>scaling<a name="5"></a></h2><pre class="codeinput">tmp = dimnorm(ifft2c(bsxfun(@times, ksp, masks)), 3);
+tmpnorm = dimnorm(tmp, 4);
+tmpnorm2 = sort(tmpnorm(:), <span class="string">'ascend'</span>);
+<span class="comment">% match convention used in BART</span>
+p100 = tmpnorm2(end);
+p90 = tmpnorm2(round(.9 * length(tmpnorm2)));
+p50 = tmpnorm2(round(.5 * length(tmpnorm2)));
+<span class="keyword">if</span> (p100 - p90) &lt; 2 * (p90 - p50)
+    scaling = p90;
+<span class="keyword">else</span>
+    scaling = p100;
+<span class="keyword">end</span>
+fprintf(<span class="string">'\nScaling: %f\n\n'</span>, scaling);
+
+ksp = ksp ./ scaling;
+ksp_adj = A_adj(ksp);
+</pre><pre class="codeoutput">
+Scaling: 296803.910924
+
+</pre><h2>ADMM<a name="6"></a></h2><pre class="codeinput">iter_ops.max_iter = 200;
+iter_ops.rho = .1;
+iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
+
+llr_ops.lambda = .04;
+llr_ops.block_dim = [10, 10];
+
+lsqr_ops.max_iter = 10;
+lsqr_ops.tol = 1e-4;
+
+alpha_ref = RefValue;
+alpha_ref.data = zeros(ny, nz, K);
+
+<span class="comment">% history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, @admm_callback);</span>
+history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj);
+
+disp(<span class="string">' '</span>);
+</pre><pre class="codeoutput">iter	lsqr iters	    r norm	   eps pri	    s norm	  eps dual	 objective
+  1	         6	   16.6781	    2.6903	   25.5635	    0.0666	   4401.71
+  2	        12	   10.4467	    3.9296	   13.3291	    0.0669	   2015.47
+  3	        17	   12.6019	    4.6159	    7.1425	    0.0670	   1304.41
+  4	        22	   10.4670	    4.9883	    4.1694	    0.0670	   1075.38
+  5	        26	   11.4666	    5.2031	    2.7414	    0.0669	    988.22
+  6	        30	    9.8104	    5.3348	    2.0205	    0.0669	    946.04
+  7	        33	   12.2532	    5.4218	    1.7106	    0.0670	    927.47
+  8	        37	   12.8613	    5.4817	    1.4184	    0.0669	    906.52
+  9	        40	   10.0979	    5.5279	    1.2447	    0.0668	    895.64
+ 10	        43	   12.0095	    5.5641	    1.1708	    0.0668	    887.65
+ 11	        46	   11.3403	    5.5936	    1.1056	    0.0667	    883.08
+ 12	        49	   12.8792	    5.6179	    1.0602	    0.0667	    877.08
+ 13	        52	   10.6837	    5.6394	    0.9623	    0.0665	    872.49
+ 14	        55	   10.1824	    5.6580	    0.9377	    0.0665	    868.66
+ 15	        58	   12.9549	    5.6748	    0.9938	    0.0666	    868.18
+ 16	        61	    9.1363	    5.6892	    0.8412	    0.0663	    863.01
+ 17	        64	   11.9925	    5.7029	    0.9501	    0.0665	    864.33
+ 18	        67	   11.4756	    5.7144	    0.8410	    0.0663	    858.87
+ 19	        70	   11.0092	    5.7261	    0.8222	    0.0662	    856.87
+ 20	        73	   12.4793	    5.7367	    0.8553	    0.0662	    856.63
+ 21	        76	   11.5321	    5.7460	    0.9013	    0.0663	    858.05
+ 22	        79	   12.1151	    5.7541	    0.8632	    0.0663	    855.15
+ 23	        82	   13.3683	    5.7623	    0.8713	    0.0663	    855.13
+ 24	        85	    9.8264	    5.7696	    0.7212	    0.0659	    851.54
+ 25	        88	   12.0320	    5.7769	    0.8824	    0.0662	    854.20
+ 26	        91	   11.7853	    5.7830	    0.8430	    0.0661	    854.14
+ 27	        94	    8.8140	    5.7885	    0.6979	    0.0657	    849.36
+ 28	        97	   11.7264	    5.7949	    0.8276	    0.0660	    850.94
+ 29	       100	   11.7861	    5.8001	    0.8288	    0.0661	    850.46
+ 30	       103	   12.3204	    5.8051	    0.8009	    0.0660	    849.16
+ 31	       106	    9.5704	    5.8099	    0.7180	    0.0657	    847.70
+ 32	       109	   11.2978	    5.8146	    0.8666	    0.0660	    851.22
+ 33	       112	   13.0633	    5.8181	    0.8020	    0.0660	    847.30
+ 34	       115	    9.5458	    5.8226	    0.6807	    0.0655	    846.11
+ 35	       118	   12.8357	    5.8265	    0.9200	    0.0661	    851.86
+ 36	       121	   10.9114	    5.8290	    0.7493	    0.0658	    846.26
+ 37	       124	   12.7225	    5.8330	    0.9017	    0.0661	    852.52
+ 38	       127	    9.3831	    5.8349	    0.7272	    0.0657	    848.06
+ 39	       130	   11.4529	    5.8381	    0.8038	    0.0659	    848.51
+ 40	       133	    8.5702	    5.8409	    0.6100	    0.0653	    844.44
+ 41	       136	   11.6287	    5.8441	    0.8575	    0.0660	    847.68
+ 42	       139	   11.2586	    5.8465	    0.7822	    0.0658	    847.88
+ 43	       142	   11.6242	    5.8485	    0.8415	    0.0659	    848.84
+ 44	       145	    7.5969	    5.8506	    0.6171	    0.0653	    844.70
+ 45	       148	   10.5179	    5.8532	    0.7267	    0.0656	    844.80
+ 46	       151	   12.6332	    5.8555	    0.9212	    0.0661	    850.64
+ 47	       154	   13.6220	    5.8566	    0.8470	    0.0660	    848.27
+ 48	       157	   13.3657	    5.8585	    0.8495	    0.0660	    848.52
+ 49	       160	   12.5350	    5.8601	    0.7783	    0.0658	    846.73
+ 50	       163	   12.4806	    5.8620	    0.8683	    0.0660	    848.40
+ 51	       166	   11.0421	    5.8635	    0.7298	    0.0657	    845.27
+ 52	       169	   10.3881	    5.8655	    0.7595	    0.0656	    845.85
+ 53	       172	   13.4375	    5.8671	    0.8775	    0.0660	    847.77
+ 54	       175	   13.3967	    5.8683	    0.8395	    0.0660	    846.96
+ 55	       178	   12.8793	    5.8697	    0.7951	    0.0658	    845.93
+ 56	       181	   10.1939	    5.8713	    0.6936	    0.0655	    844.31
+ 57	       184	    9.9125	    5.8729	    0.7209	    0.0656	    843.72
+ 58	       187	   12.6262	    5.8746	    0.8697	    0.0659	    847.74
+ 59	       190	   12.5395	    5.8751	    0.8636	    0.0660	    848.04
+ 60	       193	   10.0192	    5.8759	    0.7177	    0.0656	    844.53
+ 61	       196	   12.9828	    5.8775	    0.8177	    0.0658	    845.16
+ 62	       199	   10.8332	    5.8788	    0.7375	    0.0656	    845.64
+ 63	       202	   11.7916	    5.8795	    0.8777	    0.0659	    849.93
+ 64	       205	   12.6318	    5.8795	    0.8295	    0.0660	    845.59
+ 65	       208	   11.0475	    5.8812	    0.7485	    0.0656	    846.78
+ 66	       211	   12.4621	    5.8817	    0.8531	    0.0659	    848.21
+ 67	       214	   12.7955	    5.8823	    0.8358	    0.0659	    846.09
+ 68	       217	   12.8494	    5.8835	    0.8266	    0.0659	    846.56
+ 69	       220	   12.3593	    5.8843	    0.7743	    0.0657	    844.70
+ 70	       223	   11.8637	    5.8855	    0.8097	    0.0658	    845.81
+ 71	       226	   12.9774	    5.8863	    0.8337	    0.0659	    846.58
+ 72	       229	   13.7272	    5.8869	    0.8734	    0.0660	    848.20
+ 73	       232	   12.2181	    5.8872	    0.8146	    0.0658	    848.18
+ 74	       235	   13.4105	    5.8875	    0.8489	    0.0659	    845.68
+ 75	       238	   12.3572	    5.8888	    0.7979	    0.0658	    845.96
+ 76	       241	   10.7798	    5.8894	    0.7427	    0.0656	    844.43
+ 77	       244	   13.3524	    5.8905	    0.8694	    0.0659	    847.61
+ 78	       247	   10.9202	    5.8907	    0.7469	    0.0656	    846.25
+ 79	       250	   13.3027	    5.8912	    0.8915	    0.0660	    847.97
+ 80	       253	   13.0069	    5.8916	    0.8070	    0.0658	    844.66
+ 81	       256	   12.7000	    5.8927	    0.8289	    0.0658	    847.45
+ 82	       259	   13.0815	    5.8928	    0.8163	    0.0658	    845.27
+ 83	       262	    7.7424	    5.8938	    0.6303	    0.0653	    843.18
+ 84	       265	   10.0885	    5.8946	    0.7747	    0.0656	    845.44
+ 85	       268	   12.2796	    5.8949	    0.8507	    0.0659	    845.83
+ 86	       271	   11.0267	    5.8955	    0.7370	    0.0656	    844.98
+ 87	       274	    9.2073	    5.8959	    0.6669	    0.0653	    843.27
+ 88	       277	   12.1504	    5.8967	    0.8298	    0.0658	    844.22
+ 89	       280	   11.6588	    5.8974	    0.8361	    0.0658	    846.08
+ 90	       283	   13.7862	    5.8975	    0.8096	    0.0658	    844.12
+ 91	       286	   14.0421	    5.8983	    0.8326	    0.0658	    844.95
+ 92	       289	   13.5541	    5.8987	    0.8484	    0.0659	    846.13
+ 93	       292	    4.4940	    5.8989	    0.4885	    0.0649	    841.16
+ 94	       295	   11.9540	    5.8999	    0.9367	    0.0660	    850.86
+ 95	       298	   12.2608	    5.8987	    0.7528	    0.0657	    843.19
+ 96	       301	   13.5712	    5.9001	    0.8903	    0.0660	    847.39
+ 97	       304	   10.4731	    5.9000	    0.7700	    0.0657	    845.89
+ 98	       307	   12.8537	    5.9003	    0.8203	    0.0658	    845.62
+ 99	       310	   12.5567	    5.9008	    0.8606	    0.0659	    847.98
+100	       313	   12.7154	    5.9006	    0.8250	    0.0659	    845.38
+101	       316	   13.2255	    5.9013	    0.8431	    0.0659	    846.04
+102	       319	   12.0078	    5.9016	    0.7989	    0.0657	    846.89
+103	       322	   11.1405	    5.9016	    0.7411	    0.0656	    844.81
+104	       325	   10.5847	    5.9022	    0.7484	    0.0655	    844.02
+105	       328	   12.0208	    5.9028	    0.7750	    0.0657	    844.53
+106	       331	   13.1236	    5.9031	    0.9074	    0.0660	    848.69
+107	       334	   13.9596	    5.9026	    0.8146	    0.0658	    843.82
+108	       337	   12.4202	    5.9037	    0.7856	    0.0657	    845.39
+109	       340	   13.4420	    5.9037	    0.8944	    0.0660	    848.21
+110	       343	   13.4834	    5.9035	    0.8272	    0.0658	    845.98
+111	       346	   13.0575	    5.9039	    0.8367	    0.0659	    846.32
+112	       349	   11.6480	    5.9042	    0.7609	    0.0657	    843.80
+113	       352	   10.1582	    5.9050	    0.7497	    0.0656	    844.27
+114	       355	   12.5807	    5.9053	    0.7645	    0.0656	    843.37
+115	       358	   11.5932	    5.9059	    0.7901	    0.0657	    843.58
+116	       361	    9.2413	    5.9064	    0.5854	    0.0651	    839.32
+117	       364	   12.9014	    5.9075	    0.9715	    0.0661	    850.90
+118	       367	    8.8333	    5.9059	    0.7246	    0.0655	    847.00
+119	       370	   11.9277	    5.9057	    0.7993	    0.0658	    844.58
+120	       373	   10.0219	    5.9066	    0.7309	    0.0655	    842.96
+121	       376	    9.9598	    5.9073	    0.6933	    0.0654	    842.64
+122	       379	    9.9021	    5.9078	    0.7454	    0.0656	    843.15
+123	       382	   13.0759	    5.9082	    0.9304	    0.0660	    850.24
+124	       385	   12.4252	    5.9068	    0.8067	    0.0658	    845.37
+125	       388	   11.8862	    5.9075	    0.7220	    0.0656	    841.81
+126	       391	   13.2161	    5.9086	    0.9115	    0.0660	    849.48
+127	       394	   14.0309	    5.9076	    0.7710	    0.0657	    841.82
+128	       397	   13.5088	    5.9089	    0.8849	    0.0659	    849.40
+129	       400	    9.3216	    5.9077	    0.7165	    0.0655	    846.20
+130	       403	   12.8438	    5.9078	    0.8646	    0.0659	    846.76
+131	       406	   10.3006	    5.9081	    0.7310	    0.0656	    842.48
+132	       409	   12.4675	    5.9091	    0.8053	    0.0658	    846.12
+133	       412	   13.1644	    5.9087	    0.8389	    0.0658	    845.37
+134	       415	   11.0284	    5.9090	    0.6819	    0.0654	    842.29
+135	       418	   12.9539	    5.9097	    0.9282	    0.0660	    849.56
+136	       421	    9.6577	    5.9087	    0.7011	    0.0655	    845.22
+137	       424	   11.9553	    5.9089	    0.8621	    0.0659	    847.38
+138	       427	   13.0097	    5.9088	    0.8390	    0.0659	    846.85
+139	       430	   11.2096	    5.9088	    0.7306	    0.0656	    845.24
+140	       433	   12.7608	    5.9090	    0.8692	    0.0659	    847.70
+141	       436	    9.7663	    5.9088	    0.7256	    0.0655	    845.04
+142	       439	   12.2160	    5.9091	    0.8625	    0.0659	    846.67
+143	       442	    7.9361	    5.9092	    0.6318	    0.0653	    842.06
+144	       445	   12.9759	    5.9100	    0.9064	    0.0660	    848.13
+145	       448	   14.3194	    5.9094	    0.8315	    0.0658	    844.91
+146	       451	   11.8829	    5.9099	    0.8072	    0.0658	    847.19
+147	       454	   13.3562	    5.9095	    0.8514	    0.0659	    846.02
+148	       457	   13.5243	    5.9098	    0.8150	    0.0658	    845.19
+149	       460	   13.8042	    5.9101	    0.8720	    0.0659	    847.14
+150	       463	    9.8160	    5.9099	    0.7036	    0.0655	    843.67
+151	       466	   13.3004	    5.9106	    0.8840	    0.0659	    848.19
+152	       469	   11.5066	    5.9099	    0.7742	    0.0657	    844.92
+153	       472	   12.5308	    5.9104	    0.7722	    0.0657	    844.31
+154	       475	   10.5141	    5.9108	    0.7710	    0.0656	    845.31
+155	       478	    7.6473	    5.9108	    0.6555	    0.0653	    842.40
+156	       481	    9.2301	    5.9115	    0.5842	    0.0651	    840.42
+157	       484	   11.5341	    5.9121	    0.8987	    0.0659	    848.42
+158	       487	   11.0874	    5.9110	    0.6948	    0.0655	    843.04
+159	       490	   13.2418	    5.9116	    0.9558	    0.0661	    850.28
+160	       493	   13.4448	    5.9105	    0.8365	    0.0659	    845.40
+161	       496	   12.1699	    5.9111	    0.7762	    0.0657	    844.95
+162	       499	   12.8366	    5.9113	    0.8673	    0.0659	    847.28
+163	       502	   13.4287	    5.9110	    0.8646	    0.0659	    846.93
+164	       505	   13.5614	    5.9109	    0.8278	    0.0658	    845.57
+165	       508	   12.9651	    5.9112	    0.8226	    0.0658	    844.95
+166	       511	   12.8833	    5.9116	    0.7999	    0.0658	    845.51
+167	       514	   12.8506	    5.9115	    0.8093	    0.0658	    844.70
+168	       517	   13.0313	    5.9119	    0.8792	    0.0659	    848.95
+169	       520	   10.5077	    5.9110	    0.6948	    0.0654	    844.65
+170	       523	   12.7780	    5.9113	    0.8590	    0.0659	    846.06
+171	       526	   10.9319	    5.9115	    0.7198	    0.0656	    843.32
+172	       529	   13.3835	    5.9120	    0.8824	    0.0659	    846.93
+173	       532	   10.4979	    5.9117	    0.7831	    0.0657	    845.78
+174	       535	   11.5706	    5.9117	    0.8198	    0.0658	    847.68
+175	       538	   11.2137	    5.9112	    0.7027	    0.0654	    842.80
+176	       541	   11.2682	    5.9121	    0.8312	    0.0658	    847.07
+177	       544	   12.2409	    5.9116	    0.7167	    0.0655	    842.71
+178	       547	   12.1752	    5.9124	    0.8341	    0.0657	    846.96
+179	       550	   13.0377	    5.9118	    0.7400	    0.0655	    843.06
+180	       553	   12.9971	    5.9125	    0.9221	    0.0660	    849.02
+181	       556	   12.0947	    5.9117	    0.7440	    0.0656	    843.72
+182	       559	   13.6157	    5.9123	    0.9074	    0.0660	    848.76
+183	       562	   13.3899	    5.9116	    0.8402	    0.0659	    845.94
+184	       565	   13.0039	    5.9119	    0.8285	    0.0659	    846.77
+185	       568	   10.9574	    5.9118	    0.7544	    0.0656	    845.77
+186	       571	    9.9838	    5.9118	    0.7806	    0.0656	    845.14
+187	       574	   11.4749	    5.9122	    0.7827	    0.0657	    844.47
+188	       577	   13.5269	    5.9125	    0.8889	    0.0660	    848.00
+189	       580	   12.2841	    5.9119	    0.7759	    0.0657	    844.40
+190	       583	   13.2836	    5.9125	    0.8731	    0.0659	    847.25
+191	       586	   12.0583	    5.9122	    0.7639	    0.0657	    844.83
+192	       589	   12.0450	    5.9125	    0.8031	    0.0657	    844.23
+193	       592	   13.8296	    5.9130	    0.8162	    0.0658	    844.66
+194	       595	   13.9718	    5.9131	    0.8734	    0.0659	    846.13
+195	       598	   13.0638	    5.9129	    0.7960	    0.0658	    844.68
+196	       601	   12.3727	    5.9131	    0.8341	    0.0658	    846.53
+197	       604	    8.8783	    5.9129	    0.6884	    0.0654	    845.40
+198	       607	    7.3635	    5.9127	    0.6654	    0.0653	    844.22
+199	       610	   11.5895	    5.9129	    0.8559	    0.0659	    846.70
+200	       613	   11.2230	    5.9127	    0.8184	    0.0658	    846.07
+ 
+</pre><h2>Project and re-scale<a name="7"></a></h2><pre class="codeinput">alpha = alpha_ref.data;
+im = T_for(alpha);
+
+disp(<span class="string">'Rescaling'</span>)
+im = im * scaling;
+</pre><pre class="codeoutput">Rescaling
+</pre><h2>Show the result<a name="8"></a></h2><pre class="codeinput">figure(1), plot(1:history.nitr, history.objval, <span class="string">'linewidth'</span>, 3);
+ftitle(<span class="string">'Objective Value vs. Iteration Number'</span>); xlabel(<span class="string">'Iteration Number'</span>);
+ylabel(<span class="string">'Objective Value'</span>); faxis;
+
+figure(2);
+imshow(abs(reshape(alpha, ny, [])), []);
+ftitle(<span class="string">'Reconstructed Coefficient Images'</span>);
+
+figure(3);
+imshow(abs(cat(2, im(:,:,5), im(:,:,15), im(:,:,30))), []);
+ftitle(<span class="string">'Reconstruction at TE # 5, 15, and 30'</span>);
+</pre><img vspace="5" hspace="5" src="demo_t2shuffling_recon_01.png" alt=""> <img vspace="5" hspace="5" src="demo_t2shuffling_recon_02.png" alt=""> <img vspace="5" hspace="5" src="demo_t2shuffling_recon_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%
+% This code demonstrates the T2 Shuffling reconstruction
+% described in the MRM paper,
+% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
+%
+% The code is provided to demonstrate the method. It is not optimized
+% for reconstruction time
+%
+% Jonathan Tamir <jtamir@eecs.berkeley.edu>
+% Dec 07, 2015
+%%
+addpath src/utils
+%% load data
+
+sens1 = squeeze(readcfl('data/knee/sens'));
+bas = squeeze(readcfl('data/knee/bas'));
+mask = squeeze(readcfl('data/knee/mask'));
+ksp = squeeze(readcfl('data/knee/ksp.te'));
+
+% parameters
+K = 4;
+
+[ny, nz, nc, T] = size(ksp);
+
+% subspace
+Phi = bas(:,1:K);
+
+% permute mask
+masks = permute(mask, [1 2 4 3]);
+
+% normalize sensitivities
+sens1_mag = reshape(vecnorm(reshape(sens1, [], nc).'), [ny, nz]);
+sens = bsxfun(@rdivide, sens1, sens1_mag);
+sens(isnan(sens)) = 0;
+
+%% operators
+
+% ESPIRiT maps operator applied to coefficient images
+S_for = @(a) bsxfun(@times, sens, permute(a, [1, 2, 4, 3]));
+S_adj = @(as) squeeze(sum(bsxfun(@times, conj(sens), as), 3));
+SHS = @(a) S_adj(S_for(a));
+
+% Temporal projection operator
+T_for = @(a) temporal_forward(a, Phi);
+T_adj = @(x) temporal_adjoint(x, Phi);
+
+% Fourier transform
+F_for = @(x) fft2c(x);
+F_adj = @(y) ifft2c(y);
+
+% Sampling mask
+P_for = @(y) bsxfun(@times, y, masks);
+
+% Full forward model
+A_for = @(a) P_for(T_for(F_for(S_for(a))));
+A_adj = @(y) S_adj(F_adj(T_adj(P_for(y))));
+AHA = @(a) S_adj(F_adj(T_adj(P_for(T_for(F_for(S_for(a))))))); % slightly faster
+
+
+% ksp = P_for(F_for(S_for(im_truth)));
+
+%% scaling
+tmp = dimnorm(ifft2c(bsxfun(@times, ksp, masks)), 3);
+tmpnorm = dimnorm(tmp, 4);
+tmpnorm2 = sort(tmpnorm(:), 'ascend');
+% match convention used in BART
+p100 = tmpnorm2(end);
+p90 = tmpnorm2(round(.9 * length(tmpnorm2)));
+p50 = tmpnorm2(round(.5 * length(tmpnorm2)));
+if (p100 - p90) < 2 * (p90 - p50)
+    scaling = p90;
+else
+    scaling = p100;
+end
+fprintf('\nScaling: %f\n\n', scaling);
+
+ksp = ksp ./ scaling;
+ksp_adj = A_adj(ksp);
+
+%% ADMM
+
+iter_ops.max_iter = 200;
+iter_ops.rho = .1;
+iter_ops.objfun = @(a, sv, lam) 0.5*norm_mat(ksp - A_for(a))^2 + lam*sum(sv(:));
+
+llr_ops.lambda = .04;
+llr_ops.block_dim = [10, 10];
+
+lsqr_ops.max_iter = 10;
+lsqr_ops.tol = 1e-4;
+
+alpha_ref = RefValue;
+alpha_ref.data = zeros(ny, nz, K);
+
+% history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj, @admm_callback);
+history = iter_admm(alpha_ref, iter_ops, llr_ops, lsqr_ops, AHA, ksp_adj);
+
+disp(' ');
+
+%% Project and re-scale
+alpha = alpha_ref.data;
+im = T_for(alpha);
+
+disp('Rescaling')
+im = im * scaling;
+
+%% Show the result
+figure(1), plot(1:history.nitr, history.objval, 'linewidth', 3);
+ftitle('Objective Value vs. Iteration Number'); xlabel('Iteration Number');
+ylabel('Objective Value'); faxis;
+
+figure(2);
+imshow(abs(reshape(alpha, ny, [])), []);
+ftitle('Reconstructed Coefficient Images');
+
+figure(3);
+imshow(abs(cat(2, im(:,:,5), im(:,:,15), im(:,:,30))), []);
+ftitle('Reconstruction at TE # 5, 15, and 30');
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

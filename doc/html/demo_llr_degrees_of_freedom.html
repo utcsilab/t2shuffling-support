@@ -1,0 +1,183 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>demo_llr_degrees_of_freedom</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-03"><meta name="DC.source" content="demo_llr_degrees_of_freedom.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">parameters</a></li><li><a href="#4">load image and compute temporal coefficients</a></li><li><a href="#5">Compute LLR singular values and degrees of freedom</a></li><li><a href="#6">Classify with k-means clustering</a></li></ul></div><pre class="codeinput"><span class="comment">%%%%%%</span>
+<span class="comment">% This code demonstrates the locally low rank (LLR) degrees of freedom from</span>
+<span class="comment">% a T2 Shuffling reconstruction, and performs basic clustering.</span>
+<span class="comment">% The full description can be found in the MRM paper,</span>
+<span class="comment">% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"</span>
+<span class="comment">%</span>
+<span class="comment">% The code is provided to demonstrate the method. It is not optimized</span>
+<span class="comment">% for reconstruction time</span>
+<span class="comment">%</span>
+<span class="comment">% Jonathan Tamir &lt;jtamir@eecs.berkeley.edu&gt;</span>
+<span class="comment">% Jan 03, 2016</span>
+<span class="comment">%</span>
+</pre><pre class="codeinput">addpath <span class="string">src/utils</span>
+</pre><h2>parameters<a name="3"></a></h2><pre class="codeinput">K = 4; <span class="comment">% subspace size</span>
+Km = 6; <span class="comment">% k-means cluster size</span>
+block_dim = 10; <span class="comment">% LLR block size</span>
+tol = 1e-3; <span class="comment">% tolerance for computing DOF</span>
+</pre><h2>load image and compute temporal coefficients<a name="4"></a></h2><pre class="codeinput">recon = squeeze(readcfl(<span class="string">'data-2016-01-03/recon'</span>));
+recon = squeeze(recon(:,:,1,:));
+bas = squeeze(readcfl(<span class="string">'data-2016-01-03/bas'</span>));
+
+[ny, nz, T] = size(recon);
+
+<span class="comment">% subspace</span>
+Phi = bas(:,1:K);
+
+<span class="comment">% temporal coefficient images</span>
+alpha = temporal_adjoint(recon, Phi);
+
+<span class="comment">% Show the temporal coefficient images</span>
+figure(1)
+imshow(reshape(abs(alpha), ny, []), [])
+ftitle(<span class="string">'Temporal Coefficient Images'</span>);
+</pre><pre class="codeoutput">Size: 1  260  240    1    2   80
+Size: 1   1   1   1   1  80  80
+</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_01.png" alt=""> <h2>Compute LLR singular values and degrees of freedom<a name="5"></a></h2><pre class="codeinput"><span class="comment">% singular values of each block</span>
+[~, s_vals] = llr_thresh(alpha, 0, [block_dim, block_dim], false);
+
+<span class="comment">% degrees of freedom of each block</span>
+s_vals = imresize(s_vals, 10);
+alpha_dof = sum(s_vals &gt; tol * max(s_vals(:)), 3);
+
+figure(2);
+imshow(alpha_dof, []), colorbar;
+ftitle(<span class="string">'LLR Degrees of Freedom'</span>);
+</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_02.png" alt=""> <h2>Classify with k-means clustering<a name="6"></a></h2><pre class="codeinput">IDX = kmeans(reshape(abs(alpha), [], K), Km);
+alpha_classes = reshape(IDX, ny, nz);
+
+figure(3);
+imshow(alpha_classes, []), colormap(<span class="string">'default'</span>), colorbar;
+ftitle(<span class="string">'K-Means Clustering'</span>);
+</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%%%%%
+% This code demonstrates the locally low rank (LLR) degrees of freedom from
+% a T2 Shuffling reconstruction, and performs basic clustering.
+% The full description can be found in the MRM paper,
+% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
+%
+% The code is provided to demonstrate the method. It is not optimized
+% for reconstruction time
+%
+% Jonathan Tamir <jtamir@eecs.berkeley.edu>
+% Jan 03, 2016
+%
+%%
+addpath src/utils
+
+%% parameters
+K = 4; % subspace size
+Km = 6; % k-means cluster size
+block_dim = 10; % LLR block size
+tol = 1e-3; % tolerance for computing DOF
+
+%% load image and compute temporal coefficients
+recon = squeeze(readcfl('data-2016-01-03/recon'));
+recon = squeeze(recon(:,:,1,:));
+bas = squeeze(readcfl('data-2016-01-03/bas'));
+
+[ny, nz, T] = size(recon);
+
+% subspace
+Phi = bas(:,1:K);
+
+% temporal coefficient images
+alpha = temporal_adjoint(recon, Phi);
+
+% Show the temporal coefficient images
+figure(1)
+imshow(reshape(abs(alpha), ny, []), [])
+ftitle('Temporal Coefficient Images');
+
+%% Compute LLR singular values and degrees of freedom
+
+% singular values of each block
+[~, s_vals] = llr_thresh(alpha, 0, [block_dim, block_dim], false);
+
+% degrees of freedom of each block
+s_vals = imresize(s_vals, 10);
+alpha_dof = sum(s_vals > tol * max(s_vals(:)), 3);
+
+figure(2);
+imshow(alpha_dof, []), colorbar;
+ftitle('LLR Degrees of Freedom');
+
+%% Classify with k-means clustering
+IDX = kmeans(reshape(abs(alpha), [], K), Km);
+alpha_classes = reshape(IDX, ny, nz);
+
+figure(3);
+imshow(alpha_classes, []), colormap('default'), colorbar;
+ftitle('K-Means Clustering');
+
+##### SOURCE END #####
+--></body></html>
