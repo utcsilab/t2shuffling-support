@@ -101,7 +101,7 @@ imshow(reshape(abs(alpha), ny, []), [])
 ftitle(<span class="string">'Temporal Coefficient Images'</span>);
 </pre><pre class="codeoutput">Size: 1  260  240    1    2   80
 Size: 1   1   1   1   1  80  80
-</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_01.png" alt=""> <h2>Compute LLR singular values and degrees of freedom<a name="5"></a></h2><pre class="codeinput"><span class="comment">% singular values of each block</span>
+</pre><img vspace="5" hspace="5" src="demo_llr_degrees_of_freedom_01.png" alt=""> <h2>Compute LLR singular values and degrees of freedom<a name="5"></a></h2><pre class="codeinput"><span class="comment">% singular values of each block</span>
 [~, s_vals] = llr_thresh(alpha, 0, [block_dim, block_dim], false);
 
 <span class="comment">% degrees of freedom of each block</span>
@@ -111,13 +111,13 @@ alpha_dof = sum(s_vals &gt; tol * max(s_vals(:)), 3);
 figure(2);
 imshow(alpha_dof, []), colorbar;
 ftitle(<span class="string">'LLR Degrees of Freedom'</span>);
-</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_02.png" alt=""> <h2>Classify with k-means clustering<a name="6"></a></h2><pre class="codeinput">IDX = kmeans(reshape(abs(alpha), [], K), Km);
+</pre><img vspace="5" hspace="5" src="demo_llr_degrees_of_freedom_02.png" alt=""> <h2>Classify with k-means clustering<a name="6"></a></h2><pre class="codeinput">IDX = kmeans(reshape(abs(alpha), [], K), Km);
 alpha_classes = reshape(IDX, ny, nz);
 
 figure(3);
 imshow(alpha_classes, []), colormap(<span class="string">'default'</span>), colorbar;
 ftitle(<span class="string">'K-Means Clustering'</span>);
-</pre><img vspace="5" hspace="5" src="images/demo_llr_degrees_of_freedom_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="demo_llr_degrees_of_freedom_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %%%%%%
 % This code demonstrates the locally low rank (LLR) degrees of freedom from
