@@ -28,7 +28,7 @@ navigate to the `t2shuffling-support` base directory, and run the command
 ```
 Now you can run any of the demos in the `src` directory. To list the demos, run
 ```
-t2shuffling_demos
+>> t2shuffling_demos
 ```
 
 ### T2 Shuffling reconstruction using ADMM
@@ -68,18 +68,3 @@ on Dec. 7, 2015.
 
 All rights/distribution are the same as for the original code,
 and should cite the original author and webpage
-
-
-## TODO
-* foot_basis code -- __DONE__
-  * epg code
-* data files -- __DONE__
-  * flipangle file
-  * vieworder files?
-  * proton and t2 image
-* B1 sim -- __DONE__
-* admm/fista implementation -- __DONE__
-* LLR degrees of freedom -- __DONE__
-* TPSF calculation -- __DONE__
-* gen nmr mask -- __DONE__
-
