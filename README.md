@@ -36,6 +36,11 @@ The script [`src/demo_t2shuffling_recon.m`](src/demo_t2shuffling_recon.m) demons
 under-sampled knee.
 See the [demo webpage](http://htmlpreview.github.io/?html/demo_t2shuffling_recon.html).
 
+### Simulate signal evolutions and generate a subspace
+The script [`src/demo_gen_subspace.m`](src/demo_gen_subspace.m) demonstrates the T2 Shuffling reconstruction on an axial slice of an
+under-sampled knee.
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_gen_subspace.html).
+
 ### Locally Low Rank degrees of freedom
 The script [`src/demo_llr_degrees_of_freedom.m`](src/demo_llr_degrees_of_freedom.m) demonstrates the LLR degrees of freedom and k-means clustering.
 See the [demo webpage](http://htmlpreview.github.io/?html/demo_llr_degrees_of_freedom.html).
