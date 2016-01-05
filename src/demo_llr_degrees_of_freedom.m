@@ -15,9 +15,9 @@ block_dim = 10; % LLR block size
 tol = 1e-3; % tolerance for computing DOF
 
 %% load image and compute temporal coefficients
-recon = squeeze(readcfl('data-2016-01-03/recon'));
+recon = squeeze(readcfl('data/knee/recon'));
 recon = squeeze(recon(:,:,1,:)); % first map only
-bas = squeeze(readcfl('data-2016-01-03/bas'));
+bas = squeeze(readcfl('data/knee/bas'));
 
 [ny, nz, T] = size(recon);
 

@@ -9,8 +9,8 @@
 addpath src/utils
 
 %% Load flip angles and T2 values
-angles = dlmread('data/flipangles.txt');
-myT2vals = load('data/T2vals', 'T2vals'); % seconds
+angles = dlmread('data/footsim/flipangles.txt');
+myT2vals = load('data/footsim/T2vals', 'T2vals'); % seconds
 myT2vals = myT2vals.T2vals;
 myT1vals = [1000]*1e-3; % T1 values in seconds
 
