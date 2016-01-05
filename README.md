@@ -55,6 +55,9 @@ with both ceter-out and randomly shuffled view orderings.
 See the [demo webpage](http://htmlpreview.github.io/?html/demo_psf_1d.html).
 
 ### Transform Point Spread Function
+The script [`src/demo_tpsf.m`](src/demo_tpsf.m) simulates the transform point spread function (TPSF) for a center-out
+ordering and a randomly shuffled ordering.
+See the [demo webpage](http://htmlpreview.github.io/?html/demo_tpsf.html).
 
 
 ## Acknowledgements
@@ -77,6 +80,6 @@ and should cite the original author and webpage
 * B1 sim -- __DONE__
 * admm/fista implementation -- __DONE__
 * LLR degrees of freedom -- __DONE__
-* TPSF calculation
+* TPSF calculation -- __DONE__
 * gen nmr mask -- __DONE__
 
