@@ -1,13 +1,11 @@
 %%%%%%
-% This code demonstrates the T2 Shuffling reconstruction
-% described in the MRM paper,
-% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
-%
+% T2 Shuffling Demo: Perform a T2 Shuffling reconstruction.
 % The code is provided to demonstrate the method. It is not optimized
-% for reconstruction time
+% for reconstruction time.
 %
 % Jonathan Tamir <jtamir@eecs.berkeley.edu>
-% Dec 07, 2015
+% Jan 04, 2016
+%
 %%
 addpath src/utils
 %% load data

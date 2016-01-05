@@ -1,13 +1,8 @@
 %%%%%%
-% This code produces a k-t sampling pattern for T2 Shuffling acquisition.
-% The full description can be found in the MRM paper,
-% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
-%
-% The code is provided to demonstrate the method. It is not optimized
-% for reconstruction time
+% T2 Shuffling Demo: Generate a k-t sampling pattern for T2 Shuffling acquisition.
 %
 % Jonathan Tamir <jtamir@eecs.berkeley.edu>
-% Jan 03, 2016
+% Jan 04, 2016
 %
 %%
 addpath src/utils

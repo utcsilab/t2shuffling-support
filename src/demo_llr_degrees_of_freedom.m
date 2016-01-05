@@ -1,14 +1,9 @@
 %%%%%%
-% This code demonstrates the locally low rank (LLR) degrees of freedom from
-% a T2 Shuffling reconstruction, and performs basic clustering.
-% The full description can be found in the MRM paper,
-% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
-%
-% The code is provided to demonstrate the method. It is not optimized
-% for reconstruction time
+% T2 Shuffling Demo: Compute locally low rank degrees of freedom from a
+% T2 Shuffling reconstruction, and perform basic clustering.
 %
 % Jonathan Tamir <jtamir@eecs.berkeley.edu>
-% Jan 03, 2016
+% Jan 04, 2016
 %
 %%
 addpath src/utils

@@ -1,13 +1,9 @@
 %%%%%%
-% This code demonstrates the B1 inhomogeneity simulation
-% and bias vs. noise tradeoff described in the MRM paper,
-% "T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"
-%
-% The code is provided to demonstrate the method. It is not optimized
-% for reconstruction time
+% T2 Shuffling Demo: Simulate B1 inhomogeneity and bias vs. noise tradeoff
 %
 % Jonathan Tamir <jtamir@eecs.berkeley.edu>
 % Jan 04, 2016
+%
 %%
 addpath src/utils/
 
