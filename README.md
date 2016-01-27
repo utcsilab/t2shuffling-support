@@ -2,6 +2,12 @@
 Demonstration code for the MRM manuscript,
 __T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging__ [1].
 
+Written by Jon Tamir. Please feel free to contact me or post an issue on the repository page if there is a problem.  
+Email: <jtamir@eecs.berkeley.edu>
+
+This code may be freely used and modified for educational, research, and not-for-profit purposes (See
+[`LICENSE`](LICENSE) for more information).
+
 T2 Shuffling is an MRI acquisition and reconstruction method based on 3D Fast Spin-Echo. The method accounts for temporal
 dynamics during the echo trains to reduce image blur and resolve multiple image contrasts along the T2 relaxation curve.
 Figure 1 provides a high level overview of the method. The echo train ordering is randomly shuffled during the
