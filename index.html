@@ -31,112 +31,15 @@
       </header>
       <section>
         <h1>
-<a id="t2-shuffling-demonstration-code" class="anchor" href="#t2-shuffling-demonstration-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>T2 Shuffling Demonstration Code</h1>
+<a id="t2-shuffling-supporting-information" class="anchor" href="#t2-shuffling-supporting-information" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>T2 Shuffling Supporting Information</h1>
 
-<p>Demonstration code for the MRM manuscript,
-<strong>T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging</strong> [1].</p>
+<p>This webpage contains supporting information for the manuscript,<br>
+J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, <a href="http://onlinelibrary.wiley.com/doi/10.1002/mrm.26102/abstract">T2 Shuffling: Sharp, multicontrast, volumetric fast spin-echo imaging</a>. <em>Magn Reson Med</em> 2016 (Early View). doi: 10.1002/mrm.26102</p>
 
-<p>T2 Shuffling is an MRI acquisition and reconstruction method based on 3D Fast Spin-Echo. The method accounts for temporal
-dynamics during the echo trains to reduce image blur and resolve multiple image contrasts along the T2 relaxation curve.
-Figure 1 provides a high level overview of the method. The echo train ordering is randomly shuffled during the
-acquisition according to variable density Poisson disc sampling masks. The shuffling leads to reduced image blur at the
-cost of noise-like artifacts. The artifacts are iteratively suppressed in a regularized reconstruction based on
-compressed sensing and full signal dynamics are recovered.</p>
+<p>All the demos and code to reproduce the figures can be found on the <a href="https://github.com/jtamir/t2shuffling-support">GitHub repository</a>. The repository contains a reference implementation of T2 Shuffling as well as in vivo data from a volunteer scan (collected with IRB approval).</p>
 
-<p><img src="doc/images/t2shuffling-overview.png?raw=true" alt=""></p>
-
-<p>[1] J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, "T2 Shuffling: Sharp,
-Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early View (2016).</p>
-
-<h2>
-<a id="organization" class="anchor" href="#organization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Organization</h2>
-
-<ul>
-<li>
-<code>src/</code>: Matlab demos, outlined below
-
-<ul>
-<li>
-<code>src/utils/</code>: Matlab utility and mex functions</li>
-</ul>
-</li>
-<li>
-<code>data/</code>: Collection of mat and BART files used by the demos</li>
-<li>
-<code>doc/</code>: Documentation and demos</li>
-</ul>
-
-<h2>
-<a id="matlab-demos" class="anchor" href="#matlab-demos" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matlab Demos</h2>
-
-<p>To install the mex files and add the correct paths for the demos,
-navigate to the <code>t2shuffling-support</code> base directory, and run the command</p>
-
-<pre><code>&gt;&gt; make
-</code></pre>
-
-<p>Now you can run any of the demos in the <code>src</code> directory. To list the demos, run</p>
-
-<pre><code>&gt;&gt; t2shuffling_demos
-</code></pre>
-
-<h3>
-<a id="t2-shuffling-reconstruction-using-admm-demo-webpage" class="anchor" href="#t2-shuffling-reconstruction-using-admm-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>T2 Shuffling reconstruction using ADMM <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_t2shuffling_recon.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_t2shuffling_recon.m"><code>src/demo_t2shuffling_recon.m</code></a> demonstrates the T2 Shuffling reconstruction on an axial slice of an
-under-sampled knee.</p>
-
-<h3>
-<a id="simulate-signal-evolutions-and-generate-a-subspace-demo-webpage" class="anchor" href="#simulate-signal-evolutions-and-generate-a-subspace-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simulate signal evolutions and generate a subspace <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_gen_subspace.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_gen_subspace.m"><code>src/demo_gen_subspace.m</code></a> demonstrates the T2 Shuffling reconstruction on an axial slice of an
-under-sampled knee.</p>
-
-<h3>
-<a id="locally-low-rank-degrees-of-freedom-demo-webpage" class="anchor" href="#locally-low-rank-degrees-of-freedom-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locally Low Rank degrees of freedom <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_llr_degrees_of_freedom.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_llr_degrees_of_freedom.m"><code>src/demo_llr_degrees_of_freedom.m</code></a> demonstrates the LLR degrees of freedom and k-means clustering.</p>
-
-<h3>
-<a id="randomly-shuffled-echo-train-ordering-demo-webpage" class="anchor" href="#randomly-shuffled-echo-train-ordering-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Randomly shuffled echo train ordering <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_t2shuffling_mask.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_t2shuffling_mask.m"><code>src/demo_t2shuffling_mask.m</code></a> demonstrates the echo train view ordering/sampling pattern generation.</p>
-
-<h3>
-<a id="b_1-inhomogeneity-demo-webpage" class="anchor" href="#b_1-inhomogeneity-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>B_1 inhomogeneity <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_b1_and_model_error.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_b1_and_model_error.m"><code>src/demo_b1_and_model_error.m</code></a> simulates the subspace model error as a function of percent B1 inhomogeneity and T2 value,
-as well as demonstrating the bias vs. noise tradeoff with subspace size.</p>
-
-<h3>
-<a id="1d-point-spread-function-demo-webpage" class="anchor" href="#1d-point-spread-function-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>1D Point Spread Function <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_psf_1d.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_psf_1d.m"><code>src/demo_psf_1d.m</code></a> simulates the 1D point spread function (PSF) for exponential decay
-with both ceter-out and randomly shuffled view orderings.</p>
-
-<h3>
-<a id="transform-point-spread-function-demo-webpage" class="anchor" href="#transform-point-spread-function-demo-webpage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transform Point Spread Function <a href="http://jtamir.github.io/t2shuffling-support/doc/html/demo_tpsf.html">[Demo Webpage]</a>
-</h3>
-
-<p>The script <a href="src/demo_tpsf.m"><code>src/demo_tpsf.m</code></a> simulates the transform point spread function (TPSF) for a center-out
-ordering and a randomly shuffled ordering.</p>
-
-<h2>
-<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
-
-<p>The extended phase graph (EPG) code
-was written by Brian Hargreaves and downloaded
-from <a href="http://web.stanford.edu/%7Ebah/software/epg/">http://web.stanford.edu/~bah/software/epg/</a>
-on Dec. 7, 2015.</p>
-
-<p>All rights/distribution are the same as for the original code,
-and should cite the original author and webpage</p>
+<p>A copy of the supporting information can be downloaded from here:<br>
+<a href="http://www.eecs.berkeley.edu/%7Ejtamir/t2shuffling_support.pdf">t2shuffling_support.pdf</a> (Sha-1: <code>d06cb9598fbad657e2e34e8daeb2a7f7540caf08</code>)</p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
