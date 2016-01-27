@@ -17,8 +17,7 @@ compressed sensing and full signal dynamics are recovered.
 
 ![](doc/images/t2shuffling-overview.png?raw=true)
 
-[1] J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, "T2 Shuffling: Sharp,
-Multi-Contrast, Volumetric Fast Spin-Echo Imaging," Magn, Reson, Med., Early View (2016).
+[1] J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, [T2 Shuffling: Sharp, multicontrast, volumetric fast spin-echo imaging][t2shuffling-paper]. *Magn Reson Med* 2016 (Early View). doi: 10.1002/mrm.26102
 
 ## Organization
 * `src/`: Matlab demos, outlined below
@@ -72,3 +71,6 @@ on Dec. 7, 2015.
 
 All rights/distribution are the same as for the original code,
 and should cite the original author and webpage
+
+[t2shuffling-paper]:http://onlinelibrary.wiley.com/doi/10.1002/mrm.26102/abstract
+
