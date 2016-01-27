@@ -7,3 +7,5 @@
 
 *.cfl
 *.hdr
+
+*.DS_Store
