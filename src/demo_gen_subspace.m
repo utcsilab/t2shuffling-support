@@ -29,7 +29,7 @@ N = 256; % maximum number of unique T2 values for training
 verbose = false;
 
 %
-[U, X, T2vals, T1vals, TE, e2s] = gen_FSEbasis(N, angles, T, e2s, TE, myT1vals, myT2vals, verbose);
+[U, X, T1vals, T2vals, TE, e2s] = gen_FSEbasis(N, angles, T, e2s, TE, myT1vals, myT2vals, verbose);
 Phi = U(:,1:K);
 
 %
