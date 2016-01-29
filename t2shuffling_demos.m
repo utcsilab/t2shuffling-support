@@ -4,6 +4,7 @@ fprintf('\tJ.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, 
 fprintf('\t"T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging"\n');
 fprintf('\tMagn. Reson. Med,, Early View, 2016\n\n');
 
+addpath src
 
 D = dir('src/demo_*.m');
 t2sdemos = {D.name}';
