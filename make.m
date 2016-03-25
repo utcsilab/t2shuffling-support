@@ -1,6 +1,6 @@
 addpath src
 
-fprintf('Mexing Variable Density Poisson Disc Mas...\n');
+fprintf('Mexing Variable Density Poisson Disk Mask...\n');
 cd src/utils
 mex vdPoisMex.c
 cd ../..
