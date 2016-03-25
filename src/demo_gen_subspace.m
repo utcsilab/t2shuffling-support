@@ -34,7 +34,7 @@ Phi = U(:,1:K);
 
 %
 figure(2);
-plot((1:T)*TE*1000, X, 'linewidth', 2);
+plot((e2s+1:T+e2s)*TE*1000, X, 'linewidth', 2);
 xlim([TE*1000, TE*1000*T]);
 xlabel('Virtual echo time (ms)');
 ylabel('Signal value');
