@@ -19,6 +19,14 @@ compressed sensing and full signal dynamics are recovered.
 
 [1] J.I. Tamir, M. Uecker, W. Chen, P. Lai, M.T. Alley, S.S. Vasanawala, and M. Lustig, [T2 Shuffling: Sharp, multicontrast, volumetric fast spin-echo imaging][t2shuffling-paper]. *Magn Reson Med* 2016 (Early View). doi: 10.1002/mrm.26102
 
+Multi-planar video of relaxation over time:
+[[Youtube]](https://youtu.be/60FogqghOYs)
+[[Direct Link]](doc/videos/t2shuffling_reformat.mov)
+
+Same reconstruction, with a fixed window level:
+[[Youtube]](https://youtu.be/nmnQjTUIeS0)
+[[Direct Link]](doc/videos/t2shuffling_reformat_rescale.mov)
+
 ## Organization
 * `src/`: Matlab demos, outlined below
   * `src/utils/`: Matlab utility and mex functions
