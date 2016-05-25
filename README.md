@@ -77,6 +77,11 @@ was written by Brian Hargreaves and downloaded
 from http://web.stanford.edu/~bah/software/epg/
 on Dec. 7, 2015.
 
+Some Matlab utility functions were written by Michael Lustig in the ESPIRiT
+Matlab reference implementation. They were downloaded from
+http://people.eecs.berkeley.edu/~mlustig/Software.html
+on Dec. 7, 2015.
+
 All rights/distribution are the same as for the original code,
 and should cite the original author and webpage
 
