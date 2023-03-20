@@ -44,29 +44,29 @@ Now you can run any of the demos in the `src` directory. To list the demos, run
 >> t2shuffling_demos
 ```
 
-### T2 Shuffling reconstruction using ADMM [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_t2shuffling_recon.html)
+### T2 Shuffling reconstruction using ADMM [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_t2shuffling_recon.html)
 The script [`src/demo_t2shuffling_recon.m`](src/demo_t2shuffling_recon.m) demonstrates the T2 Shuffling reconstruction on an axial slice of an
 under-sampled knee.
 
-### Simulate signal evolutions and generate a subspace [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_gen_subspace.html)
+### Simulate signal evolutions and generate a subspace [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_gen_subspace.html)
 The script [`src/demo_gen_subspace.m`](src/demo_gen_subspace.m) demonstrates the T2 Shuffling reconstruction on an axial slice of an
 under-sampled knee.
 
-### Locally Low Rank degrees of freedom [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_llr_degrees_of_freedom.html)
+### Locally Low Rank degrees of freedom [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_llr_degrees_of_freedom.html)
 The script [`src/demo_llr_degrees_of_freedom.m`](src/demo_llr_degrees_of_freedom.m) demonstrates the LLR degrees of freedom and k-means clustering.
 
-### Randomly shuffled echo train ordering [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_t2shuffling_mask.html)
+### Randomly shuffled echo train ordering [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_t2shuffling_mask.html)
 The script [`src/demo_t2shuffling_mask.m`](src/demo_t2shuffling_mask.m) demonstrates the echo train view ordering/sampling pattern generation.
 
-### B_1 inhomogeneity [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_b1_and_model_error.html)
+### B_1 inhomogeneity [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_b1_and_model_error.html)
 The script [`src/demo_b1_and_model_error.m`](src/demo_b1_and_model_error.m) simulates the subspace model error as a function of percent B1 inhomogeneity and T2 value,
 as well as demonstrating the bias vs. noise tradeoff with subspace size.
 
-### 1D Point Spread Function [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_psf_1d.html)
+### 1D Point Spread Function [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_psf_1d.html)
 The script [`src/demo_psf_1d.m`](src/demo_psf_1d.m) simulates the 1D point spread function (PSF) for exponential decay
 with both ceter-out and randomly shuffled view orderings.
 
-### Transform Point Spread Function [[Demo Webpage]](http://jtamir.github.io/t2shuffling-support/doc/html/demo_tpsf.html)
+### Transform Point Spread Function [[Demo Webpage]](http://utcsilab.github.io/t2shuffling-support/doc/html/demo_tpsf.html)
 The script [`src/demo_tpsf.m`](src/demo_tpsf.m) simulates the transform point spread function (TPSF) for a center-out
 ordering and a randomly shuffled ordering.
 
