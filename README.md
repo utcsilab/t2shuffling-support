@@ -3,7 +3,7 @@ Demonstration code for the MRM manuscript,
 __T2 Shuffling: Sharp, Multi-Contrast, Volumetric Fast Spin-Echo Imaging__ [1].
 
 Written by Jon Tamir. Please feel free to contact me or post an issue on the repository page if there is a problem.  
-Email: <jtamir@eecs.berkeley.edu>
+Email: <jtamir@utexas.edu>
 
 This code may be freely used and modified for educational, research, and not-for-profit purposes (See
 [`LICENSE`](LICENSE) for more information).
